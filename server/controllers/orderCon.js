@@ -5,7 +5,7 @@ class Orders {
     const { name, quantity, price } = req.body;
     const id = req.user.id;
     try {
-      const newOrder = {
+      const order = {
         name,
         quantity,
         price,
@@ -13,7 +13,7 @@ class Orders {
       };
 
       //insert into database
-      await Order.create(newOrder);
+      await Order.create(order);
 
       res.status(201).json({ message: `New order has been created` });
     } catch (error) {
