@@ -11,8 +11,11 @@ class Controller {
       if (!email) throw { name: "reqEmailPassword" };
       if (!password) throw { name: "reqEmailPassword" };
 
-      const user = await User.findOne({ where: { email } });
-      if (!user) throw { name: "emailpassword" };
+      let user = await User.findOne({ where: { email } });
+      if (!user) {
+        user = await User.findOne({ where: { username: email } });
+        if (!user) throw { name: "emailpassword" };
+      }
 
       const pass = comparePassword(password, user.password);
       if (!pass) throw { name: "emailpassword" };

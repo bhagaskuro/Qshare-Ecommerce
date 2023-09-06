@@ -1,23 +1,44 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import DashboardPage from "../views/DashboardPage.vue";
+import AddPage from "../views/AddPage.vue";
+import LoginPage from "../views/LoginPage.vue";
+import RegisterPage from "../views/RegisterPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      name: "Dashboard",
+      component: DashboardPage,
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
-  ]
-})
+      path: "/add",
+      name: "Add",
+      component: AddPage,
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: LoginPage,
+    },
+    {
+      path: "/register",
+      name: "Register",
+      component: RegisterPage,
+    },
+  ],
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  const isLogin = localStorage.access_token;
+  if ((to.name === "Dashboard" || to.name === "Add") && !isLogin) {
+    next({ name: "Login" });
+  } else if ((to.name === "Login" || to.name === "Register") && isLogin) {
+    next({ name: "Dashboard" });
+  } else {
+    next();
+  }
+});
+
+export default router;
